@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Security;
+using System.Threading;
 
 namespace FindSmallest
 {
@@ -33,10 +35,15 @@ namespace FindSmallest
 
         static void Main()
         {
-            foreach (int[] data in Data)
+            foreach (int[] d in Data)
             {
-                int smallest = FindSmallest(data);
-                Console.WriteLine("\t" + String.Join(", ", data) + "\n-> " + smallest);
+                Thread t = new Thread(() =>
+                {
+                    int smallest = FindSmallest(d);
+                    Console.WriteLine("\t" + String.Join(", ", d) + "\n-> " + smallest);
+                });
+                t.Start();
+                //int smallest = FindSmallest(data);
             }
         }
     }
