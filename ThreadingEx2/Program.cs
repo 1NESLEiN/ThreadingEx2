@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,7 +10,6 @@ namespace FindSmallest
 {
     class Program
     {
-
         private static readonly int[][] Data = new int[][]
         {
             new[] {1, 5, 4, 2},
@@ -18,7 +19,7 @@ namespace FindSmallest
             new[] {1, 22, 1, 9, -3, 5}
         };
 
-        private static List<int> _smallInts = new List<int>(); 
+        private static List<int> _smallInts = new List<int>();
 
         private static int FindSmallest(int[] numbers)
         {
@@ -40,15 +41,14 @@ namespace FindSmallest
 
         static void Main()
         {
-            List<Task> taskList = new List<Task>();
+            List<Task<int>> taskList = new List<Task<int>>();
 
             foreach (int[] d in Data)
             {
-                Task findSmallestTask = new Task(() =>
+                Task<int> findSmallestTask = new Task<int>(() =>
                 {
                     int smallest = FindSmallest(d);
-                    _smallInts.Add(smallest);
-                    Console.WriteLine("\t" + String.Join(", ", d) + "\n-> " + smallest);
+                    return smallest;
                 });
 
                 taskList.Add(findSmallestTask);
@@ -58,11 +58,16 @@ namespace FindSmallest
             {
                 t.Start();
             }
-            Task.WaitAll(taskList.ToArray());
 
-            Console.WriteLine("\nSmallest of all integers:");
-            int smallestOfAll = FindSmallest(_smallInts.ToArray());
-            Console.WriteLine("\t" + String.Join(", ", _smallInts.ToArray()) + "\n-> " + smallestOfAll);
+            // Not necessary, as task.Result awaits
+            //Task.WaitAll(taskList.ToArray());
+
+            foreach (Task<int> task in taskList)
+            {
+                Console.WriteLine(task.Result);
+                _smallInts.Add(task.Result);
+            }
+            Console.WriteLine("\t" + "Smallest of all integers: " + FindSmallest(_smallInts.ToArray()));
         }
     }
 }
