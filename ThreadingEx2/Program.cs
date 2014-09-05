@@ -67,7 +67,7 @@ namespace FindSmallest
                 Console.WriteLine(task.Result);
                 _smallInts.Add(task.Result);
             }
-            Console.WriteLine("\t" + "Smallest of all integers: " + FindSmallest(_smallInts.ToArray()));
+            Console.WriteLine("\n" + "Smallest of all integers: " + FindSmallest(_smallInts.ToArray()));
         }
     }
 }
