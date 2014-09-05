@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Security;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace FindSmallest
 {
@@ -30,6 +32,7 @@ namespace FindSmallest
                     smallestSoFar = number;
                 }
             }
+            Console.WriteLine("\t" + String.Join(", ", numbers) + "\n-> " + smallestSoFar);
             return smallestSoFar;
         }
 
@@ -37,13 +40,24 @@ namespace FindSmallest
         {
             foreach (int[] d in Data)
             {
+                Task findSmallestTask = Task.Run(() =>
+                {
+                    FindSmallest(d);
+                });
+
+                //To help keep the tasks from being killed, whenever the program stops
+                Console.ReadLine();
+
+                /*
+                 * Using threads
+                 * Now to use Tasks
                 Thread t = new Thread(() =>
                 {
                     int smallest = FindSmallest(d);
                     Console.WriteLine("\t" + String.Join(", ", d) + "\n-> " + smallest);
                 });
                 t.Start();
-                //int smallest = FindSmallest(data);
+                 */
             }
         }
     }
